@@ -208,15 +208,37 @@ module.exports.businessGetQRPdf = (email, width, stream) => {
         const doc = new PDFDocument({ Title: "QR Code" });
         doc.pipe(stream);
 
+        doc.text("Use your Camera app to scan the following code", {
+          align: "center",
+          height: 15,
+        });
+        doc.image(url, 72, 72 + 15, {
+          fit: [468, 400],
+          align: "center",
+          valign: "center",
+        });
+        let currentHeight = 72 + 15 + 400 + 15;
         doc
-          .text("Use your Camera app to scan the following code", {
-            align: "center",
-          })
-          .image(url, {
-            fit: [468, 400],
-            align: "center",
-            valign: "center",
-          });
+          .fontSize(28)
+          .text(
+            "Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code.",
+            72,
+            currentHeight,
+            { width: 468, align: "justify" }
+          );
+
+        doc.fontSize(12).moveDown();
+        doc.fillColor("green").fontSize(12).text(
+          "Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code.",
+
+          { width: 468, align: "justify" }
+        );
+
+        doc.fillColor("black").fontSize(12).text(
+          "Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code. Use your Camera app to scan the following code.",
+
+          { width: 468, align: "justify" }
+        );
 
         doc.end();
         resolve(true);
