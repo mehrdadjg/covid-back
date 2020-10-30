@@ -289,48 +289,44 @@ module.exports.setBusinessProfile = (
   submissionMessage
 ) => {
   return new Promise((resolve, reject) => {
-    Business.updateOne(
-      {
-        email: email,
-      },
-      {
-        $set: {
-          profile: {
-            businessName: businessName,
-            businessType: businessType,
-            address1: address1,
-            address2: address2,
-            city: city,
-            province: province,
-            postalCode: postalCode,
-            phoneNumber: phoneNumber,
-            preferredTime: preferredTime,
-            submissionMessage: submissionMessage,
-          },
-        },
-      },
-      (err, res) => {
-        if (err) {
+    const newProfile = {};
+
+    Business.findOne({ email: email })
+      .then((doc) => {
+        if (doc) {
+          if (!doc.profile) doc.profile = {};
+
+          businessName && (doc.profile.businessName = businessName);
+          businessType && (doc.profile.businessType = businessType);
+          address1 && (doc.profile.address1 = address1);
+          address2 && (doc.profile.address2 = address2);
+          city && (doc.profile.city = city);
+          province && (doc.profile.province = province);
+          postalCode && (doc.profile.postalCode = postalCode);
+          phoneNumber && (doc.profile.phoneNumber = phoneNumber);
+          preferredTime && (doc.profile.preferredTime = preferredTime);
+          submissionMessage &&
+            (doc.profile.submissionMessage = submissionMessage);
+
+          doc.save();
+          resolve(true);
+        } else {
           reject({
             error: {
               id: 100012,
               message: "Something went wrong.",
             },
           });
-        } else {
-          if (res.nModified === 1) {
-            resolve(true);
-          } else {
-            console.log(res);
-            reject({
-              error: {
-                id: 100013,
-                message: "Something went wrong.",
-              },
-            });
-          }
         }
-      }
-    );
+      })
+      .catch((err) => {
+        console.log(err);
+        reject({
+          error: {
+            id: 100013,
+            message: "Something went wrong.",
+          },
+        });
+      });
   });
 };

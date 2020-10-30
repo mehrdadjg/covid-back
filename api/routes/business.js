@@ -138,6 +138,7 @@ router.post(
     // provided by passport
     const email = req.body.business.email;
     const profileValues = req.body.values;
+    console.log(profileValues);
 
     businessSaveProfile(email, profileValues)
       .then(() => {
