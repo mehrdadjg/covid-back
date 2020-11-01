@@ -279,8 +279,8 @@ module.exports.setBusinessProfile = (
   email,
   businessName,
   businessType,
-  address1,
-  address2,
+  addressLine1,
+  addressLine2,
   city,
   province,
   postalCode,
@@ -296,16 +296,21 @@ module.exports.setBusinessProfile = (
         if (doc) {
           if (!doc.profile) doc.profile = {};
 
-          businessName && (doc.profile.businessName = businessName);
-          businessType && (doc.profile.businessType = businessType);
-          address1 && (doc.profile.address1 = address1);
-          address2 && (doc.profile.address2 = address2);
-          city && (doc.profile.city = city);
-          province && (doc.profile.province = province);
-          postalCode && (doc.profile.postalCode = postalCode);
-          phoneNumber && (doc.profile.phoneNumber = phoneNumber);
-          preferredTime && (doc.profile.preferredTime = preferredTime);
-          submissionMessage &&
+          businessName !== undefined &&
+            (doc.profile.businessName = businessName);
+          businessType !== undefined &&
+            (doc.profile.businessType = businessType);
+          addressLine1 !== undefined &&
+            (doc.profile.addressLine1 = addressLine1);
+          addressLine2 !== undefined &&
+            (doc.profile.addressLine2 = addressLine2);
+          city !== undefined && (doc.profile.city = city);
+          province !== undefined && (doc.profile.province = province);
+          postalCode !== undefined && (doc.profile.postalCode = postalCode);
+          phoneNumber !== undefined && (doc.profile.phoneNumber = phoneNumber);
+          preferredTime !== undefined &&
+            (doc.profile.preferredTime = preferredTime);
+          submissionMessage !== undefined &&
             (doc.profile.submissionMessage = submissionMessage);
 
           doc.save();
