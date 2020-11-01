@@ -8,9 +8,9 @@ const businessSchema = mongoose.Schema({
   emailVerificationSentAt: { type: Date },
   profile: {
     businessName: { type: String, trim: true },
-    businessType: { type: Number, enum: [0, 1, 100] },
-    address1: { type: String, trim: true },
-    address2: { type: String, trim: true },
+    businessType: { type: Number, enum: [0, 1, 2] },
+    addressLine1: { type: String, trim: true },
+    addressLine2: { type: String, trim: true },
     city: { type: String, trim: true },
     province: {
       type: Number,
@@ -30,7 +30,7 @@ const businessSchema = mongoose.Schema({
     },
     preferredTime: {
       type: Number,
-      enum: [0, 1, 2, 100],
+      enum: [0, 1, 2, 3],
     },
     submissionMessage: { type: String, trim: true },
   },
