@@ -335,3 +335,30 @@ module.exports.setBusinessProfile = (
       });
   });
 };
+
+module.exports.getQRSettings = (email) => {
+  return new Promise((resolve, reject) => {
+    Business.findOne({ email: email })
+      .then((doc) => {
+        if (doc) {
+          resolve(doc.qrSettings);
+        } else {
+          reject({
+            error: {
+              id: 100019,
+              message: "Business was not found.",
+            },
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        reject({
+          error: {
+            id: 100018,
+            message: "Something went wrong.",
+          },
+        });
+      });
+  });
+};

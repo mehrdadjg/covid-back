@@ -34,6 +34,131 @@ const businessSchema = mongoose.Schema({
     },
     submissionMessage: { type: String, trim: true },
   },
+  qrSettings: {
+    pdf: {
+      topLine: {
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+          default: "Use your Camera app to scan the following code",
+        },
+        fontSize: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 1,
+        },
+        fontColor: {
+          type: Number,
+          required: true,
+          enum: [9, 1, 2, 3, 4, 5],
+          default: 0,
+        },
+      },
+      qrImageSize: {
+        type: Number,
+        required: true,
+        enum: [0, 1, 2, 3],
+        default: 2,
+      },
+      paragraphCount: {
+        type: Number,
+        required: true,
+        enum: [0, 1, 2, 3],
+        default: 2,
+      },
+      paragraph1: {
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+          default:
+            "Once you do this, a web page will open up in your phone that asks for your contact information. If we suspect that you came into contact with people who may have been sick, we will contact you. Don't forget to call us at 587-111-1111 or visit covid-19-alert.com to notify us, if you start experiencing symptoms.",
+        },
+        fontSize: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 1,
+        },
+        alignment: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 3,
+        },
+        fontColor: {
+          type: Number,
+          required: true,
+          enum: [9, 1, 2, 3, 4, 5],
+          default: 0,
+        },
+        spaceAfter: {
+          type: Boolean,
+          required: true,
+          default: true,
+        },
+      },
+      paragraph2: {
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+          default: "We can stop the spread of this virus",
+        },
+        fontSize: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 1,
+        },
+        alignment: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 1,
+        },
+        fontColor: {
+          type: Number,
+          required: true,
+          enum: [9, 1, 2, 3, 4, 5],
+          default: 0,
+        },
+        spaceAfter: {
+          type: Boolean,
+          required: true,
+          default: false,
+        },
+      },
+      paragraph3: {
+        text: {
+          type: String,
+          required: true,
+          trim: true,
+          default: "together",
+        },
+        fontSize: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 3,
+        },
+        alignment: {
+          type: Number,
+          required: true,
+          enum: [0, 1, 2, 3],
+          default: 1,
+        },
+        fontColor: {
+          type: Number,
+          required: true,
+          enum: [9, 1, 2, 3, 4, 5],
+          default: 3,
+        },
+      },
+    },
+  },
 });
 businessSchema.index({ email: 1 }, { sparse: false, unique: true });
 businessSchema.index({ link: -1 }, { sparse: false, unique: true });

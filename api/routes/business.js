@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   businessGetQRCode,
   businessGetQRPdf,
+  businessGetQRPdfSettings,
   businessGetVerificationEmail,
   businessLogin,
   businessSaveProfile,
@@ -229,6 +230,33 @@ router.get(
         code: 1,
       });
     });
+  }
+);
+
+/**
+ * Routes to /downloadpdf/settings within the business router.
+ */
+router.get(
+  "/downloadpdf/settings",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    // provided by passport
+    const email = req.body.business.email;
+
+    businessGetQRPdfSettings(email)
+      .then((settings) => {
+        res.status(406).json({
+          settings,
+          code: 0,
+        });
+      })
+      .catch((api_error) => {
+        console.log({ api_error });
+        res.status(406).json({
+          ...api_error,
+          code: 1,
+        });
+      });
   }
 );
 
