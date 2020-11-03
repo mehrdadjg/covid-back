@@ -228,23 +228,35 @@ module.exports.businessGetQRPdf = (email, width, stream) => {
         doc.pipe(stream);
 
         // creates the top line of the pdf
+        const topLineHeight =
+          qrPdfSettings.topLine.fontSize < 2
+            ? 15
+            : qrPdfSettings.topLine.fontSize === 2
+            ? 20
+            : 25;
         if (qrPdfSettings.topLine.text !== "") {
           doc
             .fontSize(fontSizes[qrPdfSettings.topLine.fontSize])
             .fillColor(colors[qrPdfSettings.topLine.fontColor])
             .text(qrPdfSettings.topLine.text, {
               align: "center",
-              height: 15,
+              height: topLineHeight,
             });
         }
 
         // creates the qr image
-        doc.image(url, 72, qrPdfSettings.topLine.text !== "" ? 72 + 15 : 72, {
-          fit: [468, qrSizes[qrPdfSettings.qrImageSize]],
-          align: "center",
-          valign: "center",
-        });
-        let currentHeight = 72 + 15 + qrSizes[qrPdfSettings.qrImageSize] + 15;
+        doc.image(
+          url,
+          72,
+          qrPdfSettings.topLine.text !== "" ? 72 + topLineHeight : 72,
+          {
+            fit: [468, qrSizes[qrPdfSettings.qrImageSize]],
+            align: "center",
+            valign: "center",
+          }
+        );
+        let currentHeight =
+          72 + topLineHeight + qrSizes[qrPdfSettings.qrImageSize] + 15;
 
         // creates the first paragraph, if required
         if (qrPdfSettings.paragraphCount > 0) {
