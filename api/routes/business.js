@@ -245,7 +245,7 @@ router.get(
 
     businessGetQRPdfSettings(email)
       .then((settings) => {
-        res.status(406).json({
+        res.status(200).json({
           settings,
           code: 0,
         });

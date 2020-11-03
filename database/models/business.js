@@ -66,7 +66,7 @@ const businessSchema = mongoose.Schema({
         type: Number,
         required: true,
         enum: [0, 1, 2, 3],
-        default: 2,
+        default: 3,
       },
       paragraph1: {
         text: {
