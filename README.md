@@ -19,9 +19,9 @@
     Fill in the `<...>` with appropriate values.
 
 3.  Create a new folder, called `app`, by running
-    `mkdir app`
+    `mkdir app`.
     Move to the folder to just created and clone the [covid-front](https://github.com/mehrdadjg/covid-front) project, by running
-    `cd app && git clone https://github.com/mehrdadjg/covid-front.git .`
+    `cd app && git clone https://github.com/mehrdadjg/covid-front.git .`.
     Run `npm install` to install the dependencies of the front end project.
 4.  Move back to the main directory by running
     `cd ..` and then run `npm install` to install the dependencies of the back end project.
