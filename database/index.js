@@ -319,7 +319,7 @@ module.exports.setBusinessProfile = (
           reject({
             error: {
               id: 100012,
-              message: "Something went wrong.",
+              message: "Business does not exist.",
             },
           });
         }
@@ -336,6 +336,11 @@ module.exports.setBusinessProfile = (
   });
 };
 
+/**
+ * Retrieves the QR settings from the database.
+ *
+ * @param {String} email
+ */
 module.exports.getQRSettings = (email) => {
   return new Promise((resolve, reject) => {
     Business.findOne({ email: email })
@@ -356,6 +361,162 @@ module.exports.getQRSettings = (email) => {
         reject({
           error: {
             id: 100018,
+            message: "Something went wrong.",
+          },
+        });
+      });
+  });
+};
+
+/**
+ *
+ * @param {String}                                                  email
+ * @param {Array.<{field: Array.<string>, value: (String|Number)}>} settings
+ */
+module.exports.setQRSettings = (email, settings) => {
+  return new Promise((resolve, reject) => {
+    if (!settings) {
+      reject({
+        error: {
+          id: 100022,
+          message: "Settings are invalid.",
+        },
+      });
+    }
+    Business.findOne({ email: email })
+      .then((doc) => {
+        if (doc) {
+          settings.forEach((setting) => {
+            if (setting.field.length === 0) {
+              return reject({
+                error: {
+                  id: 100023,
+                  message: "Field is invalid.",
+                },
+              });
+            } else if (setting.field.length === 1) {
+              if (setting.field[0] === "qrImageSize") {
+                doc.qrSettings.pdf.qrImageSize = setting.value;
+              } else if (setting.field[0] === "paragraphCount") {
+                doc.qrSettings.pdf.paragraphCount = setting.value;
+              }
+            } else if (setting.field.length === 2) {
+              if (setting.field[0] === "topLine") {
+                if (setting.field[1] === "text") {
+                  doc.qrSettings.pdf.topLine.text = setting.value;
+                } else if (setting.field[1] === "fontSize") {
+                  doc.qrSettings.pdf.topLine.fontSize = setting.value;
+                } else if (setting.field[1] === "fontColor") {
+                  doc.qrSettings.pdf.topLine.fontColor = setting.value;
+                } else {
+                  return reject({
+                    error: {
+                      id: 100027,
+                      message: "Field is invalid.",
+                    },
+                  });
+                }
+              } else if (setting.field[0] === "paragraph1") {
+                if (setting.field[1] === "text") {
+                  doc.qrSettings.pdf.paragraph1.text = setting.value;
+                } else if (setting.field[1] === "fontSize") {
+                  doc.qrSettings.pdf.paragraph1.fontSize = setting.value;
+                } else if (setting.field[1] === "alignment") {
+                  doc.qrSettings.pdf.paragraph1.alignment = setting.value;
+                } else if (setting.field[1] === "fontColor") {
+                  doc.qrSettings.pdf.paragraph1.fontColor = setting.value;
+                } else if (setting.field[1] === "spaceAfter") {
+                  doc.qrSettings.pdf.paragraph1.spaceAfter = setting.value;
+                } else {
+                  return reject({
+                    error: {
+                      id: 100028,
+                      message: "Field is invalid.",
+                    },
+                  });
+                }
+              } else if (setting.field[0] === "paragraph2") {
+                if (setting.field[1] === "text") {
+                  doc.qrSettings.pdf.paragraph2.text = setting.value;
+                } else if (setting.field[1] === "fontSize") {
+                  doc.qrSettings.pdf.paragraph2.fontSize = setting.value;
+                } else if (setting.field[1] === "alignment") {
+                  doc.qrSettings.pdf.paragraph2.alignment = setting.value;
+                } else if (setting.field[1] === "fontColor") {
+                  doc.qrSettings.pdf.paragraph2.fontColor = setting.value;
+                } else if (setting.field[1] === "spaceAfter") {
+                  doc.qrSettings.pdf.paragraph2.spaceAfter = setting.value;
+                } else {
+                  return reject({
+                    error: {
+                      id: 100029,
+                      message: "Field is invalid.",
+                    },
+                  });
+                }
+              } else if (setting.field[0] === "paragraph3") {
+                if (setting.field[1] === "text") {
+                  doc.qrSettings.pdf.paragraph3.text = setting.value;
+                } else if (setting.field[1] === "fontSize") {
+                  doc.qrSettings.pdf.paragraph3.fontSize = setting.value;
+                } else if (setting.field[1] === "alignment") {
+                  doc.qrSettings.pdf.paragraph3.alignment = setting.value;
+                } else if (setting.field[1] === "fontColor") {
+                  doc.qrSettings.pdf.paragraph3.fontColor = setting.value;
+                } else {
+                  return reject({
+                    error: {
+                      id: 100030,
+                      message: "Field is invalid.",
+                    },
+                  });
+                }
+              } else {
+                return reject({
+                  error: {
+                    id: 100026,
+                    message: "Field is invalid.",
+                  },
+                });
+              }
+            } else {
+              return reject({
+                error: {
+                  id: 100025,
+                  message: "Field is invalid.",
+                },
+              });
+            }
+          });
+
+          doc
+            .save()
+            .then(() => {
+              resolve(true);
+            })
+            .catch((err) => {
+              console.error(err);
+              reject({
+                error: {
+                  id: 100024,
+                  message: "Something went wrong.",
+                },
+              });
+            });
+        } else {
+          reject({
+            error: {
+              id: 100021,
+              message: "Business does not exist.",
+            },
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        reject({
+          error: {
+            id: 100020,
             message: "Something went wrong.",
           },
         });

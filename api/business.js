@@ -9,6 +9,7 @@ const {
   getQRSettings,
   setBusinessProfile,
   setBusinessVerificationCode,
+  setQRSettings,
 } = require("../database");
 
 const { sign } = require("../authentication");
@@ -295,6 +296,11 @@ module.exports.businessGetQRPdf = (email, width, stream) => {
   });
 };
 
+/**
+ * Given an email address, returns the QR settings.
+ *
+ * @param {String} email
+ */
 module.exports.businessGetQRPdfSettings = (email) => {
   return new Promise((resolve, reject) => {
     getQRSettings(email)
@@ -303,6 +309,25 @@ module.exports.businessGetQRPdfSettings = (email) => {
       })
       .catch((db_error) => {
         console.log({ db_error });
+        reject(db_error);
+      });
+  });
+};
+
+/**
+ * Sets the provided settings for the given business.
+ *
+ * @param {String}                                                  email
+ * @param {Array.<{field: Array.<string>, value: (String|Number)}>} settings
+ */
+module.exports.businessSetQRPdfSettings = (email, settings) => {
+  return new Promise((resolve, reject) => {
+    setQRSettings(email, settings)
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((db_error) => {
+        console.error({ db_error });
         reject(db_error);
       });
   });

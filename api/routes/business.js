@@ -8,6 +8,7 @@ const {
   businessGetVerificationEmail,
   businessLogin,
   businessSaveProfile,
+  businessSetQRPdfSettings,
   businessSignUp,
   businessSubmitVerificationCode,
 } = require("../business");
@@ -139,7 +140,6 @@ router.post(
     // provided by passport
     const email = req.body.business.email;
     const profileValues = req.body.values;
-    console.log(profileValues);
 
     businessSaveProfile(email, profileValues)
       .then(() => {
@@ -247,6 +247,33 @@ router.get(
       .then((settings) => {
         res.status(200).json({
           settings,
+          code: 0,
+        });
+      })
+      .catch((api_error) => {
+        console.log({ api_error });
+        res.status(406).json({
+          ...api_error,
+          code: 1,
+        });
+      });
+  }
+);
+
+/**
+ * Routes to /downloadpdf/settings within the business router.
+ */
+router.post(
+  "/downloadpdf/settings",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    // provided by passport
+    const email = req.body.business.email;
+    const settingValues = req.body.values;
+
+    businessSetQRPdfSettings(email, settingValues)
+      .then(() => {
+        res.status(200).json({
           code: 0,
         });
       })
