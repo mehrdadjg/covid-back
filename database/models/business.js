@@ -52,7 +52,7 @@ const businessSchema = mongoose.Schema({
         fontColor: {
           type: Number,
           required: true,
-          enum: [9, 1, 2, 3, 4, 5],
+          enum: [0, 1, 2, 3, 4, 5],
           default: 0,
         },
       },
@@ -91,7 +91,7 @@ const businessSchema = mongoose.Schema({
         fontColor: {
           type: Number,
           required: true,
-          enum: [9, 1, 2, 3, 4, 5],
+          enum: [0, 1, 2, 3, 4, 5],
           default: 0,
         },
         spaceAfter: {
@@ -122,7 +122,7 @@ const businessSchema = mongoose.Schema({
         fontColor: {
           type: Number,
           required: true,
-          enum: [9, 1, 2, 3, 4, 5],
+          enum: [0, 1, 2, 3, 4, 5],
           default: 0,
         },
         spaceAfter: {
@@ -153,7 +153,7 @@ const businessSchema = mongoose.Schema({
         fontColor: {
           type: Number,
           required: true,
-          enum: [9, 1, 2, 3, 4, 5],
+          enum: [0, 1, 2, 3, 4, 5],
           default: 3,
         },
       },
