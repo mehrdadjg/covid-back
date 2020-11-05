@@ -523,3 +523,58 @@ module.exports.setQRSettings = (email, settings) => {
       });
   });
 };
+
+/**
+ * Adds a new visitor to the cloud.
+ *
+ * @param {String} businessLink
+ * @param {String} visitorEmail
+ * @param {String} visitorFirstName
+ * @param {String} visitorLastName
+ * @param {Date}   visitorBirthday
+ */
+module.exports.addVisitor = (
+  businessLink,
+  visitorEmail,
+  visitorFirstName,
+  visitorLastName,
+  visitorBirthday
+) => {
+  const newVisitor = { email: visitorEmail };
+  visitorFirstName && (newVisitor.firstName = visitorFirstName);
+  visitorLastName && (newVisitor.lastName = visitorLastName);
+  visitorBirthday && (newVisitor.birthday = visitorBirthday);
+
+  return new Promise((resolve, reject) => {
+    Business.updateOne(
+      { link: businessLink },
+      { $push: { visits: newVisitor } },
+      (err, res) => {
+        if (err) {
+          reject({
+            error: {
+              id: 100031,
+              message: "Something went wrong.",
+            },
+          });
+        } else {
+          if (res.nModified === 1) {
+            Business.findOne({ link: businessLink }).then((doc) => {
+              const submissionMessage = doc.profile.submissionMessage;
+              resolve(submissionMessage);
+            });
+          } else {
+            console.log(res);
+            reject({
+              error: {
+                id: 100032,
+                message:
+                  "Business in invalid. Make sure you have spelled the business link correctly.",
+              },
+            });
+          }
+        }
+      }
+    );
+  });
+};

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  businessAddVisitor,
   businessGetQRCode,
   businessGetQRPdf,
   businessGetQRPdfSettings,
@@ -286,5 +287,38 @@ router.post(
       });
   }
 );
+
+/**
+ * Routes to /visits/add within the business router.
+ */
+router.post("/visits/add", (req, res) => {
+  // provided by passport
+  const businessLink = req.body.link;
+  const visitorEmail = req.body.email;
+  const visitorFname = req.body.fname;
+  const visitorLname = req.body.lname;
+  const visitorBirthday = req.body.birthday;
+
+  businessAddVisitor(
+    businessLink,
+    visitorEmail,
+    visitorFname,
+    visitorLname,
+    visitorBirthday
+  )
+    .then((submissionMessage) => {
+      res.status(201).json({
+        code: 0,
+        submissionMessage,
+      });
+    })
+    .catch((api_error) => {
+      console.log({ api_error });
+      res.status(406).json({
+        ...api_error,
+        code: 1,
+      });
+    });
+});
 
 module.exports = router;

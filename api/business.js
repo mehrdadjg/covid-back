@@ -2,6 +2,7 @@ const QRCode = require("qrcode");
 const PDFDocument = require("pdfkit");
 
 const {
+  addVisitor,
   confirmBusinessVerificationCode,
   createBusiness,
   getBusiness,
@@ -337,6 +338,40 @@ module.exports.businessSetQRPdfSettings = (email, settings) => {
     setQRSettings(email, settings)
       .then((result) => {
         resolve(result);
+      })
+      .catch((db_error) => {
+        console.error({ db_error });
+        reject(db_error);
+      });
+  });
+};
+
+/**
+ * Adds a new visitor to the database.
+ *
+ * @param {String} businessLink
+ * @param {String} visitorEmail
+ * @param {String} visitorFirstName
+ * @param {String} visitorLastName
+ * @param {Date}   visitorBirthday
+ */
+module.exports.businessAddVisitor = (
+  businessLink,
+  visitorEmail,
+  visitorFirstName,
+  visitorLastName,
+  visitorBirthday
+) => {
+  return new Promise((resolve, reject) => {
+    addVisitor(
+      businessLink,
+      visitorEmail,
+      visitorFirstName,
+      visitorLastName,
+      visitorBirthday
+    )
+      .then((submissionMessage) => {
+        resolve(submissionMessage);
       })
       .catch((db_error) => {
         console.error({ db_error });
