@@ -159,34 +159,6 @@ const businessSchema = mongoose.Schema({
       },
     },
   },
-  visits: {
-    type: [
-      {
-        email: {
-          type: String,
-          trim: true,
-          lowercase: true,
-        },
-        time: {
-          type: Date,
-          default: new Date(),
-        },
-        firstName: {
-          type: String,
-          trim: true,
-        },
-        lastName: {
-          type: String,
-          trim: true,
-        },
-        birthday: {
-          type: Date,
-        },
-      },
-    ],
-    required: true,
-    default: [],
-  },
 });
 businessSchema.index({ email: 1 }, { sparse: false, unique: true });
 businessSchema.index({ link: -1 }, { sparse: false, unique: true });

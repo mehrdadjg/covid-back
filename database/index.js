@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const business = require("./models/business");
 
 const Business = require("./models/business");
+const visit = require("./models/visit");
+const Visit = require("./models/visit");
 
 /**
  * Creates a connection to the mongodb database. This function must
@@ -524,6 +525,15 @@ module.exports.setQRSettings = (email, settings) => {
   });
 };
 
+getBusinessByLink = async (link) => {
+  const business = await Business.findOne({ link: link });
+  if (business) {
+    return business;
+  } else {
+    return null;
+  }
+};
+
 /**
  * Adds a new visitor to the cloud.
  *
@@ -540,41 +550,82 @@ module.exports.addVisitor = (
   visitorLastName,
   visitorBirthday
 ) => {
-  const newVisitor = { email: visitorEmail };
-  visitorFirstName && (newVisitor.firstName = visitorFirstName);
-  visitorLastName && (newVisitor.lastName = visitorLastName);
-  visitorBirthday && (newVisitor.birthday = visitorBirthday);
+  return new Promise(async (resolve, reject) => {
+    const business = await getBusinessByLink(businessLink);
 
-  return new Promise((resolve, reject) => {
-    Business.updateOne(
-      { link: businessLink },
-      { $push: { visits: newVisitor } },
-      (err, res) => {
-        if (err) {
-          reject({
-            error: {
-              id: 100031,
-              message: "Something went wrong.",
-            },
-          });
-        } else {
-          if (res.nModified === 1) {
-            Business.findOne({ link: businessLink }).then((doc) => {
-              const submissionMessage = doc.profile.submissionMessage;
-              resolve(submissionMessage);
-            });
-          } else {
-            console.log(res);
-            reject({
-              error: {
-                id: 100032,
-                message:
-                  "Business in invalid. Make sure you have spelled the business link correctly.",
-              },
-            });
-          }
-        }
+    if (!business) {
+      reject({
+        error: {
+          id: 100032,
+          message:
+            "Business in invalid. Make sure you have spelled the business link correctly.",
+        },
+      });
+    }
+
+    const newVisitorObject = {
+      email: visitorEmail,
+      businessEmail: business.email,
+      time: new Date(),
+    };
+    visitorFirstName && (newVisitorObject.firstName = visitorFirstName);
+    visitorLastName && (newVisitorObject.lastName = visitorLastName);
+    visitorBirthday && (newVisitorObject.birthday = visitorBirthday);
+
+    const newVisitor = new visit(newVisitorObject);
+
+    newVisitor.save((err) => {
+      if (err) {
+        console.log(err);
+        return reject({
+          error: {
+            id: 100031,
+            message: "Something went wrong.",
+          },
+        });
       }
-    );
+
+      const submissionMessage =
+        business.profile && business.profile.submissionMessage
+          ? business.profile.submissionMessage
+          : null;
+      resolve(submissionMessage);
+    });
+  });
+};
+
+/**
+ * Given the email address and the date range, returns the number of visits
+ * to the business in that range.
+ *
+ * @param {String}  email
+ * @param {Date}    from  If undefined, the start of time is considered.
+ * @param {Date}    to    If undefined, the end of time is considered.
+ * @param {Boolean} count If true, returns the number of visitors, otherwise,
+ *                        returns an object containing the information of the
+ *                        visitors.
+ *
+ * @returns {Promise.<Number|Array>} Promise value is either the number of visits or array
+ *                                   of informations about the visits.
+ */
+module.exports.getVisitors = (email, from, to, count = false) => {
+  return new Promise((resolve, reject) => {
+    Visit.find({ businessEmail: email, time: { $gte: from, $lte: to } })
+      .then((docs) => {
+        if (count) {
+          resolve(docs.length);
+        } else {
+          resolve(docs);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return reject({
+          error: {
+            id: 100033,
+            message: "Something went wrong.",
+          },
+        });
+      });
   });
 };

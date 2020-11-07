@@ -6,6 +6,7 @@ const {
   businessGetQRCode,
   businessGetQRPdf,
   businessGetQRPdfSettings,
+  businessGetVisitorCount,
   businessGetVerificationEmail,
   businessLogin,
   businessSaveProfile,
@@ -292,7 +293,6 @@ router.post(
  * Routes to /visits/add within the business router.
  */
 router.post("/visits/add", (req, res) => {
-  // provided by passport
   const businessLink = req.body.link;
   const visitorEmail = req.body.email;
   const visitorFname = req.body.fname;
@@ -320,5 +320,35 @@ router.post("/visits/add", (req, res) => {
       });
     });
 });
+
+/**
+ * Routes to /visits/getcount within the business router.
+ */
+router.post(
+  "/visits/getcount",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    // provided by passport
+    const email = req.body.business.email;
+
+    const from = req.body.from;
+    const to = req.body.to;
+
+    businessGetVisitorCount(email, from, to)
+      .then((count) => {
+        res.status(201).json({
+          code: 0,
+          count,
+        });
+      })
+      .catch((api_error) => {
+        console.log({ api_error });
+        res.status(406).json({
+          ...api_error,
+          code: 1,
+        });
+      });
+  }
+);
 
 module.exports = router;

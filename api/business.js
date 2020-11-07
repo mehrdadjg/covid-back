@@ -8,6 +8,7 @@ const {
   getBusiness,
   getProfile,
   getQRSettings,
+  getVisitors,
   setBusinessProfile,
   setBusinessVerificationCode,
   setQRSettings,
@@ -372,6 +373,27 @@ module.exports.businessAddVisitor = (
     )
       .then((submissionMessage) => {
         resolve(submissionMessage);
+      })
+      .catch((db_error) => {
+        console.error({ db_error });
+        reject(db_error);
+      });
+  });
+};
+
+/**
+ * Returns the number of visitors who have visited the given business
+ * in the given range.
+ *
+ * @param {String}  email
+ * @param {Date}    from  If undefined, the start of time is considered.
+ * @param {Date}    to    If undefined, the end of time is considered.
+ */
+module.exports.businessGetVisitorCount = (email, from, to) => {
+  return new Promise((resolve, reject) => {
+    getVisitors(email, from, to, true)
+      .then((count) => {
+        resolve(count);
       })
       .catch((db_error) => {
         console.error({ db_error });
