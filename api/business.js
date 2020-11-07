@@ -161,7 +161,7 @@ module.exports.businessGetQRCode = (email, width) => {
               errorCorrectionLevel: "H",
               type: "svg",
             };
-        QRCode.toString(`http://192.168.1.72:3000/checkin/${link}`, options)
+        QRCode.toString(`http://192.168.1.71:3000/checkin/${link}`, options)
           .then((svg) => {
             resolve(svg);
           })
@@ -189,7 +189,7 @@ const businessGetQRDataURL = (email, width) => {
           : {
               errorCorrectionLevel: "H",
             };
-        QRCode.toDataURL(`http://192.168.1.72:3000/checkin/${link}`, options)
+        QRCode.toDataURL(`http://192.168.1.71:3000/checkin/${link}`, options)
           .then((url) => {
             resolve(url);
           })
@@ -350,18 +350,20 @@ module.exports.businessSetQRPdfSettings = (email, settings) => {
 /**
  * Adds a new visitor to the database.
  *
- * @param {String} businessLink
- * @param {String} visitorEmail
- * @param {String} visitorFirstName
- * @param {String} visitorLastName
- * @param {Date}   visitorBirthday
+ * @param {String}   businessLink
+ * @param {String}   visitorEmail
+ * @param {String}   visitorFirstName
+ * @param {String}   visitorLastName
+ * @param {Date}     visitorBirthday
+ * @param {Boolean}  dummy            If set to true, this api will not change the database.
  */
 module.exports.businessAddVisitor = (
   businessLink,
   visitorEmail,
   visitorFirstName,
   visitorLastName,
-  visitorBirthday
+  visitorBirthday,
+  dummy
 ) => {
   return new Promise((resolve, reject) => {
     addVisitor(
@@ -369,7 +371,8 @@ module.exports.businessAddVisitor = (
       visitorEmail,
       visitorFirstName,
       visitorLastName,
-      visitorBirthday
+      visitorBirthday,
+      dummy
     )
       .then((submissionMessage) => {
         resolve(submissionMessage);

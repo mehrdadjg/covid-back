@@ -17,6 +17,7 @@ const {
 
 require("../../authentication").configure();
 const passport = require("passport");
+const business = require("../../database/models/business");
 
 /**
  * Routes to /signup within the business router.
@@ -298,13 +299,15 @@ router.post("/visits/add", (req, res) => {
   const visitorFname = req.body.fname;
   const visitorLname = req.body.lname;
   const visitorBirthday = req.body.birthday;
+  const dummy = req.body.dummy;
 
   businessAddVisitor(
     businessLink,
     visitorEmail,
     visitorFname,
     visitorLname,
-    visitorBirthday
+    visitorBirthday,
+    dummy
   )
     .then((submissionMessage) => {
       res.status(201).json({

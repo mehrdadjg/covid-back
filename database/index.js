@@ -542,16 +542,22 @@ getBusinessByLink = async (link) => {
  * @param {String} visitorFirstName
  * @param {String} visitorLastName
  * @param {Date}   visitorBirthday
+ * @param {Boolean}  dummy            If set to true, this api will not change the database.
  */
 module.exports.addVisitor = (
   businessLink,
   visitorEmail,
   visitorFirstName,
   visitorLastName,
-  visitorBirthday
+  visitorBirthday,
+  dummy
 ) => {
   return new Promise(async (resolve, reject) => {
     const business = await getBusinessByLink(businessLink);
+    const submissionMessage =
+      business.profile && business.profile.submissionMessage
+        ? business.profile.submissionMessage
+        : null;
 
     if (!business) {
       reject({
@@ -561,6 +567,10 @@ module.exports.addVisitor = (
             "Business in invalid. Make sure you have spelled the business link correctly.",
         },
       });
+    }
+
+    if (dummy) {
+      return resolve(submissionMessage);
     }
 
     const newVisitorObject = {
@@ -585,10 +595,6 @@ module.exports.addVisitor = (
         });
       }
 
-      const submissionMessage =
-        business.profile && business.profile.submissionMessage
-          ? business.profile.submissionMessage
-          : null;
       resolve(submissionMessage);
     });
   });
